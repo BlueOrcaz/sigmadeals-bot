@@ -20,9 +20,8 @@ module.exports = {
                 for(let i = 0; i < freeGames.length; i++) {
                     const gameId = freeGames[i].catalogNs?.mappings[0]?.pageSlug || freeGames[i].productSlug;
                     const url = "https://store.epicgames.com/p/" + gameId;
-                    
-
-
+                    const endDate = freeGames[i].promotions?.promotionalOffers[0]?.promotionalOffers[0]?.endDate;
+                    const convertedDate = new Date(endDate).getTime() / 1000;
                     const originalprice = freeGames[i]["price"]["totalPrice"]["fmtPrice"]["originalPrice"];
                     const embed = new EmbedBuilder()
                         .setColor(0x0099FF)
@@ -34,9 +33,10 @@ module.exports = {
                         .addFields(
                             { name: 'Original Price:', value: `${originalprice} USD` },
                             { name: 'Discounted Price:', value: "Free" },
+                            { name: 'Deal Ends on:', value: `<t:${convertedDate}:F>`}
                         )
                         .setTimestamp()
-                        .setFooter({ text: 'DealBot, made by BlueOrcaz', iconURL: 'https://t4.ftcdn.net/jpg/05/21/61/77/360_F_521617788_tW8J94DiIAr3L26zND5RzcwxrCpJcOrt.jpg' });
+                        .setFooter({ text: 'sigma deals bot, made by BlueOrcaz', iconURL: 'https://t4.ftcdn.net/jpg/05/21/61/77/360_F_521617788_tW8J94DiIAr3L26zND5RzcwxrCpJcOrt.jpg' });
                     embedArray.push(embed);
                 }
                 interaction.reply({ content: "ok sigma, here are free games on epic for dis week!!!" , embeds: embedArray});
