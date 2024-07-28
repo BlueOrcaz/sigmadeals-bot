@@ -44,7 +44,7 @@ module.exports = {
                         .setAuthor({ name: 'ozbargain', iconURL: 'https://www.ozbargain.com.au/wiki/lib/exe/fetch.php?hash=0cce44&w=200&media=https%3A%2F%2Ffiles.delvu.com%2Fimages%2Fozbargain%2Flogo%2FSquare%2520Flat.png', url: 'https://www.ozbargain.com.au/' })
                         .setThumbnail(item.image)
                         .setTimestamp()
-                        .setFooter({ text: 'DealBot, made by BlueOrcaz', iconURL: 'https://t4.ftcdn.net/jpg/05/21/61/77/360_F_521617788_tW8J94DiIAr3L26zND5RzcwxrCpJcOrt.jpg' })
+                        .setFooter({ text: 'sigma deals bot, made by BlueOrcaz', iconURL: 'https://t4.ftcdn.net/jpg/05/21/61/77/360_F_521617788_tW8J94DiIAr3L26zND5RzcwxrCpJcOrt.jpg' })
                     );
 
                 const batchSize = 3;
