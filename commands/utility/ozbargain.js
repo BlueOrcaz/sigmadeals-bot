@@ -14,27 +14,38 @@ module.exports = {
                 const items = $('item').map((_, el) => {
                     const $el = $(el);
                     const description = $el.find('description').text();
-        
+                    
                     // Use regex to extract the image URL from the description
                     const imageMatch = description.match(/<img[^>]+src="([^">]+)"/);
                     const imageUrl = imageMatch ? imageMatch[1] : null;
+                    
+                    const expiryDate = $el.find('ozb\\:meta').attr('expiry');
 
                     return {
                         title: $el.find('title').text(),
                         link: $el.find('link').text(),
-                        image: imageUrl
+                        image: imageUrl,
+                        expiry: expiryDate
                     };
                 }).toArray();
 
-                const embedArray = items.map(item => new EmbedBuilder()
-                    .setColor(0x0099FF)
-                    .setTitle(item.title)
-                    .setURL(item.link)
-                    .setAuthor({ name: 'ozbargain', iconURL: 'https://www.ozbargain.com.au/wiki/lib/exe/fetch.php?hash=0cce44&w=200&media=https%3A%2F%2Ffiles.delvu.com%2Fimages%2Fozbargain%2Flogo%2FSquare%2520Flat.png', url: 'https://www.ozbargain.com.au/'})
-                    .setThumbnail(item.image)
-                    .setTimestamp()
-                    .setFooter({ text: 'DealBot, made by BlueOrcaz', iconURL: 'https://t4.ftcdn.net/jpg/05/21/61/77/360_F_521617788_tW8J94DiIAr3L26zND5RzcwxrCpJcOrt.jpg' })
-                );
+                const isExpired = (expiryDate) => {
+                    const currentDate = new Date();
+                    const expiry = new Date(expiryDate);
+                    return currentDate > expiry;
+                };
+
+                const embedArray = items
+                    .filter(item => !isExpired(item.expiry))
+                    .map(item => new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle(item.title)
+                        .setURL(item.link)
+                        .setAuthor({ name: 'ozbargain', iconURL: 'https://www.ozbargain.com.au/wiki/lib/exe/fetch.php?hash=0cce44&w=200&media=https%3A%2F%2Ffiles.delvu.com%2Fimages%2Fozbargain%2Flogo%2FSquare%2520Flat.png', url: 'https://www.ozbargain.com.au/' })
+                        .setThumbnail(item.image)
+                        .setTimestamp()
+                        .setFooter({ text: 'DealBot, made by BlueOrcaz', iconURL: 'https://t4.ftcdn.net/jpg/05/21/61/77/360_F_521617788_tW8J94DiIAr3L26zND5RzcwxrCpJcOrt.jpg' })
+                    );
 
                 const batchSize = 3;
                 let currentIndex = 0;
@@ -88,6 +99,10 @@ module.exports = {
                 collector.on('end', async () => {
                     await interaction.editReply({ components: [] });
                 });
+            })
+            .catch(error => {
+                console.error('Error fetching or processing data:', error);
+                interaction.reply({ content: 'There was an error fetching the latest deals.', ephemeral: true });
             });
     }
 };
